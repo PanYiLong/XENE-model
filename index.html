@@ -158,8 +158,13 @@ tr:nth-child(even) td { background: var(--surface2); }
   <div class="ped">
     <div class="ped-title">
       Edit Option Premiums <span class="live">update anytime</span>
-      <button onclick="fetchChain()" id="fetchChainBtn" style="margin-left:auto;font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.3);background:rgba(37,99,235,0.07);color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">↻ Fetch Live Chain</button>
-      <span id="chainNote" style="font-size:10px;color:var(--text3);"></span>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+        <input id="tradierKey" type="password" placeholder="Tradier API token" 
+          style="font-family:'DM Sans',sans-serif;font-size:11px;padding:3px 8px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);width:180px;outline:none;"
+          oninput="localStorage.setItem('tradierKey',this.value)">
+        <button onclick="fetchChain()" id="fetchChainBtn" style="font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.3);background:rgba(37,99,235,0.07);color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">↻ Fetch Live Chain</button>
+        <span id="chainNote" style="font-size:10px;color:var(--text3);"></span>
+      </div>
     </div>
     <div class="ped-grid" id="pedGrid"></div>
   </div>
@@ -255,97 +260,115 @@ function fetchPrice() {
 }
 
 // Auto-fetch on load
-window.addEventListener("load", function(){ fetchPrice(); fetchChain(); });
-
-// Maps our OPT expiry labels to approximate Unix timestamps for Yahoo Finance
-// Yahoo snaps to the nearest listed Friday expiry
-function expiryTimestamp(label) {
-  if (label === "Mar 21") return 1742515200; // Mar 20, 2026 expiry (Fri)
-  if (label === "Apr 17") return 1744934400; // Apr 17, 2026 expiry (Fri)
-  return null;
-}
+window.addEventListener("load", function(){
+  // Restore saved API key
+  var saved = localStorage.getItem('tradierKey');
+  if (saved) { document.getElementById('tradierKey').value = saved; }
+  fetchPrice();
+  if (saved) fetchChain();
+});
 
 function fetchChain() {
+  var token = document.getElementById("tradierKey").value.trim();
   var btn = document.getElementById("fetchChainBtn");
   var note = document.getElementById("chainNote");
+
+  if (!token) {
+    note.textContent = "Enter your Tradier API token first";
+    note.style.color = "var(--orange)";
+    return;
+  }
+
   btn.disabled = true;
   btn.textContent = "fetching...";
   note.textContent = "";
-  note.style.color = "var(--text3)";
 
-  var expiries = ["Mar 21", "Apr 17"];
+  // Tradier expiration format: YYYY-MM-DD
+  // Mar 20 2026 = third Friday of March 2026
+  // Apr 17 2026 = third Friday of April 2026
+  var expiryMap = { "Mar 21": "2026-03-20", "Apr 17": "2026-04-17" };
   var strikes = [40, 42.5, 45, 50];
-  var fetched = 0;
-  var errors = 0;
-  var updates = 0;
+  var expiries = Object.keys(expiryMap);
+  var fetched = 0, updates = 0;
 
-  expiries.forEach(function(exp) {
-    var ts = expiryTimestamp(exp);
-    if (!ts) return;
-    var url = "https://query1.finance.yahoo.com/v7/finance/options/XENE?date=" + ts;
-    var proxy = "https://corsproxy.io/?" + encodeURIComponent(url);
+  expiries.forEach(function(label) {
+    var dateStr = expiryMap[label];
+    var url = "https://api.tradier.com/v1/markets/options/chains?symbol=XENE&expiration=" + dateStr + "&greeks=false";
 
-    fetch(proxy)
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var result = data.optionChain && data.optionChain.result && data.optionChain.result[0];
-        if (!result) throw new Error("no result");
-        var calls = result.options && result.options[0] && result.options[0].calls;
-        if (!calls || !calls.length) throw new Error("no calls");
+    fetch(url, {
+      headers: {
+        "Authorization": "Bearer " + token,
+        "Accept": "application/json"
+      }
+    })
+    .then(function(r) {
+      if (r.status === 401) throw new Error("invalid_token");
+      return r.json();
+    })
+    .then(function(data) {
+      var options = data.options && data.options.option;
+      if (!options || !options.length) throw new Error("no_data");
 
-        strikes.forEach(function(k) {
-          // Find closest strike match
-          var match = null;
-          var bestDiff = Infinity;
-          calls.forEach(function(c) {
-            var diff = Math.abs(c.strike - k);
-            if (diff < bestDiff) { bestDiff = diff; match = c; }
-          });
-          if (match && bestDiff < 1.5) {
-            var bid = match.bid || 0;
-            var ask = match.ask || 0;
-            var mid = ask > 0 ? Math.round((bid + ask) / 2 * 100) / 100 : (match.lastPrice || 0);
-            if (mid > 0) {
-              // Update OPT array
-              OPT.forEach(function(o) {
-                if (o.x === exp && o.k === k) { o.p = mid; updates++; }
-              });
-              // Update input field
-              var inputId = "p_" + exp.replace(" ", "") + "_" + k;
-              var el = document.getElementById(inputId);
-              if (el) { el.value = mid.toFixed(2); el.style.borderColor = "var(--green)"; setTimeout(function(){ el.style.borderColor = ""; }, 2000); }
+      // Filter to calls only
+      var calls = options.filter(function(o){ return o.option_type === "call"; });
+
+      strikes.forEach(function(k) {
+        // Find best strike match
+        var match = null, bestDiff = Infinity;
+        calls.forEach(function(c) {
+          var diff = Math.abs(c.strike - k);
+          if (diff < bestDiff) { bestDiff = diff; match = c; }
+        });
+        if (match && bestDiff < 1.5) {
+          var bid = match.bid || 0;
+          var ask = match.ask || 0;
+          var mid = (bid > 0 && ask > 0)
+            ? Math.round((bid + ask) / 2 * 100) / 100
+            : (match.last || 0);
+          if (mid > 0) {
+            OPT.forEach(function(o) {
+              if (o.x === label && o.k === k) { o.p = mid; updates++; }
+            });
+            var inputId = "p_" + label.replace(" ","") + "_" + k;
+            var el = document.getElementById(inputId);
+            if (el) {
+              el.value = mid.toFixed(2);
+              el.style.borderColor = "var(--green)";
+              setTimeout(function(){ el.style.borderColor = ""; }, 2000);
             }
           }
-        });
-
-        fetched++;
-        if (fetched === expiries.length) {
-          var now = new Date();
-          var t = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
-          note.textContent = "✓ " + updates + " strikes updated (midpoints, 15min delay) · " + t;
-          note.style.color = "var(--green)";
-          btn.disabled = false;
-          btn.textContent = "↻ Fetch Live Chain";
-          rn();
-        }
-      })
-      .catch(function(e) {
-        errors++;
-        fetched++;
-        if (fetched === expiries.length) {
-          if (updates > 0) {
-            note.textContent = "⚠ Partial fetch (" + updates + " strikes). Some expirations unavailable.";
-            note.style.color = "var(--orange)";
-            rn();
-          } else {
-            note.innerHTML = 'Fetch failed — <a href="https://finance.yahoo.com/quote/XENE/options/" target="_blank" style="color:var(--accent)">open Yahoo chain</a> to copy manually';
-            note.style.color = "var(--orange)";
-          }
-          btn.disabled = false;
-          btn.textContent = "↻ Fetch Live Chain";
         }
       });
+
+      fetched++;
+      if (fetched === expiries.length) done();
+    })
+    .catch(function(e) {
+      fetched++;
+      if (e.message === "invalid_token") {
+        note.textContent = "Invalid token — check your Tradier API key";
+        note.style.color = "var(--red)";
+        btn.disabled = false;
+        btn.textContent = "↻ Fetch Live Chain";
+        return;
+      }
+      if (fetched === expiries.length) done();
+    });
   });
+
+  function done() {
+    btn.disabled = false;
+    btn.textContent = "↻ Fetch Live Chain";
+    if (updates > 0) {
+      var t = new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+      note.textContent = "✓ " + updates + " strikes updated (midpoints) · " + t;
+      note.style.color = "var(--green)";
+      rn();
+    } else {
+      note.textContent = "No matching strikes found — market may be closed";
+      note.style.color = "var(--orange)";
+    }
+  }
 }
 
 var OPT = [
