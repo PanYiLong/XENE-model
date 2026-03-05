@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>XENE X-TOLE2 Options Model</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface2: #f0f2f5;
+  --border: #e2e6ec;
+  --border2: #d0d5dd;
+  --text: #1a1f2e;
+  --text2: #4a5568;
+  --text3: #8693a7;
+  --green: #0d9e6b;
+  --green2: #0a8559;
+  --green-bg: rgba(13,158,107,0.06);
+  --red: #dc3545;
+  --red-bg: rgba(220,53,69,0.05);
+  --orange: #e67e22;
+  --yellow: #d4930a;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --accent: #2563eb;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'DM Sans', -apple-system, sans-serif; background: var(--bg); color: var(--text); padding: 20px 12px; font-size: 13px; min-height: 100vh; }
+.w { max-width: 1100px; margin: 0 auto; }
+
+/* Header */
+.hdr { margin-bottom: 20px; }
+.hdr h1 { font-family: 'JetBrains Mono', monospace; font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+.hdr h1 span { color: var(--accent); }
+.tag { display: inline-block; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--red); background: var(--red-bg); border: 1px solid rgba(220,53,69,0.2); padding: 2px 8px; border-radius: 4px; font-weight: 600; margin-left: 10px; letter-spacing: 0.5px; }
+.sub { margin-top: 6px; font-size: 12px; color: var(--text2); line-height: 1.6; }
+.sub b { color: var(--text); }
+.sub .red { color: var(--red); font-weight: 600; }
+
+/* Signal Cards */
+.sig { display: flex; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+.sc { flex: 1 1 155px; min-width: 155px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); padding: 10px 12px; }
+.sc .lbl { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+.sc .val { font-size: 15px; font-weight: 700; }
+.sc .det { font-size: 10px; color: var(--text3); margin-top: 4px; line-height: 1.4; }
+
+/* Controls */
+.ctrls { display: flex; gap: 16px; margin: 16px 0 10px; flex-wrap: wrap; align-items: flex-end; }
+.cl { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 600; color: var(--text3); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+.bg { display: flex; gap: 4px; }
+.b { padding: 5px 11px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-weight: 500; font-size: 12px; cursor: pointer; transition: all 0.15s; font-family: 'JetBrains Mono', monospace; }
+.b:hover { border-color: var(--border2); background: var(--surface2); }
+.b.a { border-color: var(--accent); background: rgba(56,189,248,0.1); color: var(--accent); font-weight: 700; }
+.mb { padding: 4px 10px; border-radius: 5px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); font-weight: 500; font-size: 11px; cursor: pointer; font-family: 'DM Sans', sans-serif; }
+.mb.a { border-color: var(--purple); background: rgba(167,139,250,0.1); color: var(--purple); font-weight: 700; }
+.mr { display: flex; gap: 5px; margin-bottom: 16px; align-items: center; }
+.mrl { font-size: 11px; color: var(--text3); margin-right: 4px; }
+
+/* Premium Editor */
+.ped { margin: 16px 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px 14px; }
+.ped-title { font-family: 'JetBrains Mono', monospace; font-size: 10px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.ped-title .live { font-size: 9px; color: var(--green); background: var(--green-bg); border: 1px solid rgba(13,158,107,0.2); padding: 1px 6px; border-radius: 3px; text-transform: none; letter-spacing: 0; }
+.ped-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+.ped-col { flex: 1 1 200px; }
+.ped-col h4 { font-size: 11px; font-weight: 600; color: var(--text2); margin-bottom: 6px; }
+.ped-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+.ped-row label { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text3); min-width: 48px; }
+.ped-row input { font-family: 'JetBrains Mono', monospace; font-size: 12px; width: 72px; padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface2); color: var(--accent); text-align: right; outline: none; }
+.ped-row input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(56,189,248,0.15); }
+
+/* Cards */
+.cards { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+.card { flex: 1 1 240px; min-width: 240px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); overflow: hidden; }
+.ch { padding: 10px 12px 7px; border-bottom: 1px solid var(--border); }
+.cht { display: flex; justify-content: space-between; align-items: center; }
+.sk { font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; color: var(--text); }
+.st { font-size: 10px; color: var(--text3); margin-left: 5px; }
+.pl { font-size: 10px; color: var(--text3); }
+.pv { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: var(--accent); }
+.cs { margin-top: 4px; display: flex; gap: 12px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); }
+.rw { padding: 6px 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); }
+.rw:last-child { border-bottom: none; }
+.rn { font-size: 11px; font-weight: 600; color: var(--text); }
+.rn span { color: var(--text3); font-weight: 400; }
+.rs { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); }
+.rp { font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700; }
+.rd { font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 500; }
+
+/* Table */
+.tw { margin-top: 16px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); overflow-x: auto; }
+.tt { padding: 10px 12px; border-bottom: 1px solid var(--border); font-size: 13px; font-weight: 700; color: var(--text); }
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { padding: 7px 8px; text-align: center; font-weight: 600; color: var(--text3); border-bottom: 1px solid var(--border); background: var(--surface2); font-family: 'JetBrains Mono', monospace; font-size: 10px; }
+th:first-child { text-align: left; }
+td { padding: 7px 8px; text-align: center; border-bottom: 1px solid var(--border); }
+td:first-child { text-align: left; }
+.scc { background: var(--surface2) !important; }
+tr:nth-child(even) td { background: var(--surface2); }
+
+/* Expected Value */
+.ev { margin-top: 16px; background: var(--surface); border-radius: 8px; border: 1px solid var(--border); padding: 12px; }
+.ev h3 { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; }
+.evr { display: flex; gap: 8px; flex-wrap: wrap; }
+.evc { flex: 1 1 140px; min-width: 140px; padding: 10px; border-radius: 6px; border: 1px solid var(--border); background: var(--surface2); }
+.evc .en { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--text); }
+.evc .ep { font-size: 10px; color: var(--text3); }
+.evc .er { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 4px; }
+.evc .ed { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 2px; }
+
+/* Notes */
+.mn { margin-top: 12px; padding: 10px 12px; background: rgba(124,58,237,0.04); border-radius: 6px; border: 1px solid rgba(124,58,237,0.15); font-size: 10px; color: #6d28d9; line-height: 1.6; }
+.nt { margin-top: 8px; padding: 10px 12px; background: rgba(212,147,10,0.04); border-radius: 6px; border: 1px solid rgba(212,147,10,0.15); font-size: 10px; color: #92400e; line-height: 1.6; opacity: 0.9; }
+.ft { margin-top: 16px; text-align: center; font-size: 10px; color: var(--text3); opacity: 0.5; }
+</style>
+</head>
+<body>
+<div class="w">
+  <div class="hdr">
+    <h1><span>XENE</span> Options Model</h1><span class="tag">X-TOLE2 CATALYST</span>
+    <div class="sub">Stock: <b id="stockPrice">$44.65</b> (AH 3/3) &middot; Readout: <span class="red">First half March 2026</span> &middot; Primary: MPC in monthly FOS frequency vs placebo &middot; Doses: 25mg / 15mg / placebo 1:1:1 (n=380)</div>
+  </div>
+
+  <div class="sig">
+    <div class="sc"><div class="lbl">Insider Activity</div><div class="val" style="color:#b45309">Neutral</div><div class="det">CEO sold $3.9M Nov-Jan via 10b5-1 plan (set Sep 2024). Mechanical, not discretionary.</div></div>
+    <div class="sc"><div class="lbl">Options Flow</div><div class="val" style="color:#0d9e6b">Mildly Bullish</div><div class="det">4,063 puts Feb 19 (+2,362%). Likely institutional hedging by existing longs.</div></div>
+    <div class="sc"><div class="lbl">Institutional</div><div class="val" style="color:#0a8559">Bullish</div><div class="det">BLK +163%, STT +352%. 115 added vs 94 reduced. 95.5% inst. owned.</div></div>
+    <div class="sc"><div class="lbl">Corporate Actions</div><div class="val" style="color:#047857">Strongly Bullish</div><div class="det">Commercial CFO + CCO hired. $242M ATM raise. Salesforce build. Launch webinars.</div></div>
+    <div class="sc"><div class="lbl">Trial De-risk</div><div class="val" style="color:#047857">High</div><div class="det">25mg P2b: 52.8% MPC (p&lt;.001). 48mo OLE: &gt;90% reduction. 15mg = swing, not gating.</div></div>
+  </div>
+
+  <div class="ped">
+    <div class="ped-title">Edit Option Premiums <span class="live">update anytime</span></div>
+    <div class="ped-grid" id="pedGrid"></div>
+  </div>
+
+  <div class="ctrls">
+    <div><div class="cl">Investment</div><div class="bg" id="ib"></div></div>
+    <div><div class="cl">Expiration</div><div class="bg" id="eb"></div></div>
+  </div>
+  <div class="mr"><span class="mrl">Return mode:</span><div class="bg" id="mb2"></div></div>
+
+  <div class="cards" id="cds"></div>
+  <div class="tw"><div class="tt" id="ttt"></div><table><thead id="thd"></thead><tbody id="tbd"></tbody></table></div>
+  <div class="ev" id="evs"></div>
+  <div class="mn" id="mnt"></div>
+  <div class="nt"><b>Sources & Assumptions:</b> Premiums are user-editable estimates. Sell-after-data uses Black-Scholes (post-event IV ~55%, risk-free 4.5%). Scenario probabilities derived from Phase 2b X-TOLE data (Neurology 2022), 48-month OLE (AES 2025), institutional positioning, and management hiring/capital signals. Expected return is probability-weighted across all scenarios. Not financial advice.</div>
+  <div class="ft">Built for informational purposes only &middot; Model assumptions should be independently verified</div>
+</div>
+
+<script>
+var C = 44.65;
+var OPT = [
+  {x:"Mar 21", k:45, p:3.20, t:"Sl. OTM", d:7},
+  {x:"Mar 21", k:50, p:1.40, t:"OTM", d:7},
+  {x:"Mar 21", k:55, p:0.55, t:"Deep OTM", d:7},
+  {x:"Apr 17", k:45, p:4.50, t:"Sl. OTM", d:34},
+  {x:"Apr 17", k:50, p:2.60, t:"OTM", d:34},
+  {x:"Apr 17", k:55, p:1.30, t:"Deep OTM", d:34}
+];
+var SCN = [
+  {n:"Blowout positive", d:"Both doses hit, strong secondaries", p:65, pb:0.20, c:"#0a8559"},
+  {n:"Strong positive",  d:"25mg hits, 15mg hits (weaker OK)",  p:58, pb:0.40, c:"#0d9e6b"},
+  {n:"Mixed positive",   d:"25mg hits, 15mg misses significance",p:50,pb:0.20, c:"#4d7c0f"},
+  {n:"Modest positive",  d:"Stat sig but underwhelms P2b",      p:46, pb:0.10, c:"#b45309"},
+  {n:"Neutral / Unclear",d:"Ambiguous or delayed",              p:42, pb:0.05, c:"#c2410c"},
+  {n:"Miss / Failure",   d:"25mg misses primary endpoint",      p:25, pb:0.05, c:"#dc2626"}
+];
+var iv = 1000, ex = "Mar 21", md = "sell";
+
+function nc(x) { var a=.254829592,b=-.284496736,c=1.421413741,e=-1.453152027,f=1.061405429,p=.3275911,s=x<0?-1:1,z=Math.abs(x)/1.4142135,t=1/(1+p*z); return .5*(1+s*(1-(((((f*t+e)*t)+c)*t+b)*t+a)*t*Math.exp(-z*z))); }
+function bs(s,k,t,r,v) { if(t<=.001) return Math.max(0,s-k); var d1=(Math.log(s/k)+(r+v*v/2)*t)/(v*Math.sqrt(t)); return s*nc(d1)-k*Math.exp(-r*t)*nc(d1-v*Math.sqrt(t)); }
+function fp(v) { return v<=-100 ? "-100%" : (v>=0?"+":"") + Math.round(v) + "%"; }
+function fd(v) { return v<0 ? "-$"+Math.abs(Math.round(v)).toLocaleString() : "$"+Math.round(v).toLocaleString(); }
+function cl(r) { return r<=-100?"#dc2626":r<0?"#c2410c":r>200?"#0a8559":"#0d9e6b"; }
+
+function mk(id, vs, cu, fn, pf) {
+  var e = document.getElementById(id); e.innerHTML = "";
+  vs.forEach(function(v) {
+    var b = document.createElement("button");
+    var dv = typeof v==="object" ? v.l : ((pf||"") + (typeof v==="number" ? v.toLocaleString() : v));
+    var vv = typeof v==="object" ? v.v : v;
+    b.className = (id==="mb2"?"mb":"b") + (vv===cu?" a":"");
+    b.textContent = dv;
+    b.onclick = function() { fn(vv); };
+    e.appendChild(b);
+  });
+}
+
+function buildPremiumEditor() {
+  var grid = document.getElementById("pedGrid");
+  var html = "";
+  ["Mar 21","Apr 17"].forEach(function(expiry) {
+    html += '<div class="ped-col"><h4>' + expiry + ' Expiry</h4>';
+    OPT.filter(function(o){return o.x===expiry}).forEach(function(o,i) {
+      var id = "p_" + expiry.replace(" ","") + "_" + o.k;
+      html += '<div class="ped-row"><label>$' + o.k + 'C</label><input type="number" step="0.05" min="0.01" id="' + id + '" value="' + o.p.toFixed(2) + '" onchange="updPrem(this)"></div>';
+    });
+    html += '</div>';
+  });
+  grid.innerHTML = html;
+}
+
+function updPrem(el) {
+  var parts = el.id.split("_");
+  var expiry = parts[1] === "Mar21" ? "Mar 21" : "Apr 17";
+  var strike = parseInt(parts[2]);
+  var val = parseFloat(el.value);
+  if (isNaN(val) || val <= 0) return;
+  OPT.forEach(function(o) {
+    if (o.x === expiry && o.k === strike) o.p = val;
+  });
+  rn();
+}
+
+function rn() {
+  mk("ib", [1000,2500,5000,10000,25000], iv, function(v){iv=v;rn();}, "$");
+  mk("eb", ["Mar 21","Apr 17"], ex, function(v){ex=v;rn();});
+  mk("mb2", [{v:"sell",l:"Sell after data"},{v:"expiry",l:"Hold to expiry"}], md, function(v){md=v;rn();});
+
+  var os = OPT.filter(function(o){return o.x===ex;});
+  var rs = os.map(function(o) {
+    var cc = o.p*100, n = Math.floor(iv/cc), co = n*cc;
+    var sr = SCN.map(function(s) {
+      var ov = md==="expiry" ? Math.max(0,s.p-o.k) : bs(s.p,o.k,o.d/365,.045,.55);
+      var tv = n*ov*100, pf = tv-co, rp = co>0 ? (pf/co)*100 : -100;
+      return {n:s.n, d:s.d, p:s.p, pb:s.pb, c:s.c, tv:tv, pf:pf, rp:rp};
+    });
+    return {k:o.k, p:o.p, t:o.t, d:o.d, n:n, co:co, sr:sr};
+  });
+
+  // Cards
+  var h = "";
+  rs.forEach(function(o) {
+    var rws = "";
+    o.sr.forEach(function(s) {
+      var bg = s.rp<=-90 ? "background:var(--red-bg);" : s.rp>0 ? "background:var(--green-bg);" : "";
+      rws += '<div class="rw" style="'+bg+'"><div style="flex:1"><div class="rn">'+s.n+' <span>('+Math.round(s.pb*100)+'%)</span></div><div class="rs">$'+s.p+'</div></div><div style="text-align:right;min-width:80px"><div class="rp" style="color:'+cl(s.rp)+'">'+fp(s.rp)+'</div><div class="rd" style="color:'+(s.pf>=0?"var(--green)":"var(--red)")+'">'+fd(s.pf)+'</div></div></div>';
+    });
+    h += '<div class="card"><div class="ch"><div class="cht"><div><span class="sk">$'+o.k+'C</span><span class="st">'+o.t+'</span></div><div style="text-align:right"><div class="pl">premium</div><div class="pv">$'+o.p.toFixed(2)+'</div></div></div><div class="cs"><span>'+o.n+' cts</span><span>$'+o.co.toLocaleString()+'</span><span>BE: $'+(o.k+o.p).toFixed(2)+'</span></div></div>'+rws+'</div>';
+  });
+  document.getElementById("cds").innerHTML = h;
+
+  // Table
+  var ml = md==="sell" ? "sell after data" : "hold to expiry";
+  document.getElementById("ttt").textContent = "$"+iv.toLocaleString()+" | "+ex+" ("+ml+") vs stock";
+  var ss = Math.floor(iv/C), sc = ss*C;
+  document.getElementById("thd").innerHTML = '<tr><th style="text-align:left">Scenario</th><th>Prob</th><th>XENE</th>'+rs.map(function(o){return'<th>$'+o.k+'C</th>'}).join("")+'<th class="scc">Stock</th></tr>';
+  var tb = "";
+  SCN.forEach(function(s,si) {
+    var sv=ss*s.p, sp=sv-sc, sr=((sv-sc)/sc)*100;
+    var oc = rs.map(function(o) {
+      var r = o.sr[si];
+      return '<td><div style="font-family:JetBrains Mono,monospace;font-size:13px;font-weight:700;color:'+cl(r.rp)+'">'+fp(r.rp)+'</div><div style="font-family:JetBrains Mono,monospace;font-size:9px;font-weight:500;color:'+(r.pf>=0?"var(--green)":"var(--red)")+'">'+fd(r.pf)+'</div></td>';
+    }).join("");
+    tb += '<tr><td><div style="font-weight:600;font-size:11px;color:var(--text)">'+s.n+'</div><div style="font-size:9px;color:var(--text3)">'+s.d+'</div></td><td style="font-family:JetBrains Mono,monospace;font-weight:700;color:'+s.c+'">'+Math.round(s.pb*100)+'%</td><td style="font-family:JetBrains Mono,monospace;font-weight:700;color:var(--text)">$'+s.p+'</td>'+oc+'<td class="scc"><div style="font-family:JetBrains Mono,monospace;font-size:13px;font-weight:700;color:'+(sr<-30?"var(--red)":sr<0?"var(--orange)":"var(--green)")+'">'+fp(sr)+'</div><div style="font-family:JetBrains Mono,monospace;font-size:9px;font-weight:500;color:'+(sp>=0?"var(--green)":"var(--red)")+'">'+fd(sp)+'</div></td></tr>';
+  });
+  document.getElementById("tbd").innerHTML = tb;
+
+  // Expected Value
+  var ev = '<h3>Expected Return (probability-weighted, $'+iv.toLocaleString()+')</h3><div class="evr">';
+  rs.forEach(function(o) {
+    var wr=0, wd=0;
+    o.sr.forEach(function(s) { wr += s.pb*s.rp; wd += s.pb*s.pf; });
+    ev += '<div class="evc"><div class="en">$'+o.k+'C '+ex+'</div><div class="ep">'+o.n+' cts, $'+o.co.toLocaleString()+'</div><div class="er" style="color:'+(wr>0?"var(--green)":"var(--red)")+'">'+fp(wr)+'</div><div class="ed">E[P&L]: '+fd(wd)+'</div></div>';
+  });
+  var sev=0, sevd=0;
+  SCN.forEach(function(s) { sev += s.pb*((ss*s.p-sc)/sc)*100; sevd += s.pb*(ss*s.p-sc); });
+  ev += '<div class="evc" style="background:var(--surface2)"><div class="en">Stock</div><div class="ep">'+ss+' sh, $'+sc.toLocaleString()+'</div><div class="er" style="color:'+(sev>0?"var(--green)":"var(--red)")+'">'+fp(sev)+'</div><div class="ed">E[P&L]: '+fd(sevd)+'</div></div></div>';
+  document.getElementById("evs").innerHTML = ev;
+
+  // Mode note
+  document.getElementById("mnt").innerHTML = md==="sell" ?
+    '<b>Sell after data (recommended):</b> Assumes selling 1-3 days post-readout. Mar 21: ~7 days time value remain. Apr 17: ~34 days. Post-event IV ~55%. Probabilities: 60% clear positive (blowout+strong), 20% mixed, 10% modest, 5% neutral, 5% miss. Mar 21 = more leverage via cheaper premium.' :
+    '<b>Hold to expiry:</b> Pure intrinsic at expiration. Worst-case floor. You would typically sell before expiry on a catalyst trade.';
+}
+
+buildPremiumEditor();
+rn();
+</script>
+</body>
+</html>
