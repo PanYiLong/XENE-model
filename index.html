@@ -110,6 +110,30 @@ tr:nth-child(even) td { background: var(--surface2); }
 .evc .er { font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; margin-top: 4px; }
 .evc .ed { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text3); margin-top: 2px; }
 
+/* My Positions */
+.pos-wrap { margin-top: 16px; background: var(--surface); border-radius: 8px; border: 2px solid rgba(37,99,235,0.2); overflow: hidden; }
+.pos-hdr { padding: 10px 14px; background: rgba(37,99,235,0.04); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 6px; }
+.pos-hdr-left { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.pos-badge { font-size: 9px; background: var(--accent); color: #fff; padding: 1px 7px; border-radius: 3px; letter-spacing: 0.05em; font-weight: 600; }
+.pos-summary { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text2); }
+.pos-cards { padding: 10px 14px; border-bottom: 1px solid var(--border); display: flex; gap: 12px; flex-wrap: wrap; }
+.pos-card { flex: 1 1 280px; background: var(--surface2); border-radius: 6px; border: 1px solid var(--border2); padding: 10px 12px; }
+.pos-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px; }
+.pos-strike { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; color: var(--text); }
+.pos-lbl { font-size: 10px; color: var(--text3); margin-left: 4px; }
+.pos-markbox { text-align: right; }
+.pos-markval { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; }
+.pos-marklbl { font-size: 9px; color: var(--text3); }
+.pos-fields { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
+.pos-field { display: flex; flex-direction: column; gap: 3px; }
+.pos-fl { font-family: 'JetBrains Mono', monospace; font-size: 9px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; }
+.pos-inp { font-family: 'JetBrains Mono', monospace; font-size: 12px; width: 70px; padding: 4px 7px; border-radius: 4px; border: 1px solid var(--border2); background: var(--surface); color: var(--accent); text-align: right; outline: none; }
+.pos-inp:focus { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(37,99,235,0.12); }
+.pos-fval { font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; color: var(--text); padding: 4px 0; }
+.pos-tbl-wrap { overflow-x: auto; }
+.pos-sec-lbl { padding: 8px 14px 4px; font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; border-top: 1px solid var(--border); }
+.pos-ev-wrap { padding: 10px 14px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-wrap: wrap; }
+
 /* Notes */
 .mn { margin-top: 12px; padding: 10px 12px; background: rgba(124,58,237,0.04); border-radius: 6px; border: 1px solid rgba(124,58,237,0.15); font-size: 10px; color: #6d28d9; line-height: 1.6; }
 .nt { margin-top: 8px; padding: 10px 12px; background: rgba(212,147,10,0.04); border-radius: 6px; border: 1px solid rgba(212,147,10,0.15); font-size: 10px; color: #92400e; line-height: 1.6; opacity: 0.9; }
@@ -120,7 +144,7 @@ tr:nth-child(even) td { background: var(--surface2); }
 <div class="w">
   <div class="hdr">
     <h1><span>XENE</span> Options Model</h1><span class="tag">X-TOLE2 CATALYST</span>
-    <div class="sub">Stock: <b id="stockPrice">$44.65</b> (AH 3/3) &middot; Readout: <span class="red">First half March 2026</span> &middot; Primary: MPC in monthly FOS frequency vs placebo &middot; Doses: 25mg / 15mg / placebo 1:1:1 (n=380)</div>
+    <div class="sub">Stock: <span style="display:inline-flex;align-items:center;gap:6px;"><b>$</b><input id="stockInput" type="number" step="0.01" min="1" value="41.03" style="font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;width:68px;padding:1px 4px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text);text-align:right;outline:none;" onchange="updateStock(this.value)"><button onclick="fetchPrice()" style="font-size:10px;padding:2px 7px;border-radius:4px;border:1px solid var(--border2);background:var(--surface2);color:var(--text3);cursor:pointer;font-family:'DM Sans',sans-serif;" title="Try to auto-fetch latest price">↻ fetch</button><span id="priceNote" style="font-size:10px;color:var(--text3);"></span></span> &middot; Readout: <span class="red">First half March 2026</span> &middot; Primary: MPC in monthly FOS frequency vs placebo &middot; Doses: 25mg / 15mg / placebo 1:1:1 (n=380)</div>
   </div>
 
   <div class="sig">
@@ -132,12 +156,25 @@ tr:nth-child(even) td { background: var(--surface2); }
   </div>
 
   <div class="ped">
-    <div class="ped-title">Edit Option Premiums <span class="live">update anytime</span></div>
+    <div class="ped-title">
+      Edit Option Premiums <span class="live">update anytime</span>
+      <button onclick="fetchChain()" id="fetchChainBtn" style="margin-left:auto;font-size:10px;padding:3px 10px;border-radius:4px;border:1px solid rgba(37,99,235,0.3);background:rgba(37,99,235,0.07);color:var(--accent);cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:600;">↻ Fetch Live Chain</button>
+      <span id="chainNote" style="font-size:10px;color:var(--text3);"></span>
+    </div>
     <div class="ped-grid" id="pedGrid"></div>
   </div>
 
   <div class="ctrls">
-    <div><div class="cl">Investment</div><div class="bg" id="ib"></div></div>
+    <div style="flex:1;min-width:260px;">
+      <div class="cl">Investment</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--accent);min-width:72px;" id="ivDisplay">$1,000</span>
+        <input type="range" id="ivSlider" min="500" max="50000" step="500" value="1000"
+          style="flex:1;accent-color:var(--accent);cursor:pointer;height:4px;"
+          oninput="setIV(parseInt(this.value))">
+      </div>
+      <div class="bg" id="ib"></div>
+    </div>
     <div><div class="cl">Expiration</div><div class="bg" id="eb"></div></div>
   </div>
   <div class="mr"><span class="mrl">Return mode:</span><div class="bg" id="mb2"></div></div>
@@ -145,29 +182,192 @@ tr:nth-child(even) td { background: var(--surface2); }
   <div class="cards" id="cds"></div>
   <div class="tw"><div class="tt" id="ttt"></div><table><thead id="thd"></thead><tbody id="tbd"></tbody></table></div>
   <div class="ev" id="evs"></div>
+
+  <!-- MY POSITIONS -->
+  <div class="pos-wrap">
+    <div class="pos-hdr">
+      <div class="pos-hdr-left">My Positions <span class="pos-badge">ACTUAL FILLS</span></div>
+      <div class="pos-summary" id="posSummary"></div>
+    </div>
+    <div class="pos-cards" id="posCards"></div>
+    <div class="pos-sec-lbl">Scenario Outcomes — Actual Portfolio</div>
+    <div class="pos-tbl-wrap"><table style="width:100%;border-collapse:collapse;font-size:11px;"><thead id="posTblHead"></thead><tbody id="posTblBody"></tbody></table></div>
+    <div class="pos-sec-lbl" style="border-top:none;padding-top:10px;">Expected Return — Actual Portfolio</div>
+    <div class="pos-ev-wrap" id="posEV"></div>
+  </div>
+
   <div class="mn" id="mnt"></div>
   <div class="nt"><b>Sources & Assumptions:</b> Premiums are user-editable estimates. Sell-after-data uses Black-Scholes (post-event IV ~55%, risk-free 4.5%). Scenario probabilities derived from Phase 2b X-TOLE data (Neurology 2022), 48-month OLE (AES 2025), institutional positioning, and management hiring/capital signals. Expected return is probability-weighted across all scenarios. Not financial advice.</div>
   <div class="ft">Built for informational purposes only &middot; Model assumptions should be independently verified</div>
 </div>
 
 <script>
-var C = 44.65;
+var C = 41.03;
+
+// Scenario multipliers relative to current stock price C
+// Strong positive dropped from ~30% to 25% per updated thesis (some upside already priced in)
+var SCN_DEF = [
+  {n:"Blowout positive", d:"Both doses hit, strong secondaries", m:1.50, pb:0.20, c:"#0a8559"},
+  {n:"Strong positive",  d:"25mg hits, 15mg hits (weaker OK)",  m:1.25, pb:0.40, c:"#0d9e6b"},
+  {n:"Mixed positive",   d:"25mg hits, 15mg misses significance",m:1.14,pb:0.20, c:"#4d7c0f"},
+  {n:"Modest positive",  d:"Stat sig but underwhelms P2b",      m:1.07, pb:0.10, c:"#b45309"},
+  {n:"Neutral / Unclear",d:"Ambiguous or delayed",              m:0.95, pb:0.05, c:"#c2410c"},
+  {n:"Miss / Failure",   d:"25mg misses primary endpoint",      m:0.58, pb:0.05, c:"#dc2626"}
+];
+
+function buildSCN() {
+  return SCN_DEF.map(function(s) {
+    return {n:s.n, d:s.d, p:Math.round(C*s.m*100)/100, pb:s.pb, c:s.c};
+  });
+}
+var SCN = buildSCN();
+
+function updateStock(val) {
+  var v = parseFloat(val);
+  if (isNaN(v) || v <= 0) return;
+  C = v;
+  SCN = buildSCN();
+  rn();
+}
+
+function fetchPrice() {
+  var note = document.getElementById("priceNote");
+  note.textContent = "fetching...";
+  note.style.color = "var(--text3)";
+  // Use a CORS-friendly Yahoo Finance proxy endpoint
+  fetch("https://query1.finance.yahoo.com/v8/finance/chart/XENE?interval=1d&range=1d")
+    .then(function(r){ return r.json(); })
+    .then(function(d){
+      var price = d.chart.result[0].meta.regularMarketPrice;
+      if (price) {
+        C = Math.round(price*100)/100;
+        SCN = buildSCN();
+        document.getElementById("stockInput").value = C.toFixed(2);
+        note.textContent = "✓ live";
+        note.style.color = "var(--green)";
+        rn();
+      }
+    })
+    .catch(function(){
+      note.textContent = "fetch failed — enter manually";
+      note.style.color = "var(--orange)";
+    });
+}
+
+// Auto-fetch on load
+window.addEventListener("load", function(){ fetchPrice(); fetchChain(); });
+
+// Maps our OPT expiry labels to approximate Unix timestamps for Yahoo Finance
+// Yahoo snaps to the nearest listed Friday expiry
+function expiryTimestamp(label) {
+  if (label === "Mar 21") return 1742515200; // Mar 20, 2026 expiry (Fri)
+  if (label === "Apr 17") return 1744934400; // Apr 17, 2026 expiry (Fri)
+  return null;
+}
+
+function fetchChain() {
+  var btn = document.getElementById("fetchChainBtn");
+  var note = document.getElementById("chainNote");
+  btn.disabled = true;
+  btn.textContent = "fetching...";
+  note.textContent = "";
+  note.style.color = "var(--text3)";
+
+  var expiries = ["Mar 21", "Apr 17"];
+  var strikes = [40, 42.5, 45, 50];
+  var fetched = 0;
+  var errors = 0;
+  var updates = 0;
+
+  expiries.forEach(function(exp) {
+    var ts = expiryTimestamp(exp);
+    if (!ts) return;
+    var url = "https://query1.finance.yahoo.com/v7/finance/options/XENE?date=" + ts;
+    var proxy = "https://corsproxy.io/?" + encodeURIComponent(url);
+
+    fetch(proxy)
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        var result = data.optionChain && data.optionChain.result && data.optionChain.result[0];
+        if (!result) throw new Error("no result");
+        var calls = result.options && result.options[0] && result.options[0].calls;
+        if (!calls || !calls.length) throw new Error("no calls");
+
+        strikes.forEach(function(k) {
+          // Find closest strike match
+          var match = null;
+          var bestDiff = Infinity;
+          calls.forEach(function(c) {
+            var diff = Math.abs(c.strike - k);
+            if (diff < bestDiff) { bestDiff = diff; match = c; }
+          });
+          if (match && bestDiff < 1.5) {
+            var bid = match.bid || 0;
+            var ask = match.ask || 0;
+            var mid = ask > 0 ? Math.round((bid + ask) / 2 * 100) / 100 : (match.lastPrice || 0);
+            if (mid > 0) {
+              // Update OPT array
+              OPT.forEach(function(o) {
+                if (o.x === exp && o.k === k) { o.p = mid; updates++; }
+              });
+              // Update input field
+              var inputId = "p_" + exp.replace(" ", "") + "_" + k;
+              var el = document.getElementById(inputId);
+              if (el) { el.value = mid.toFixed(2); el.style.borderColor = "var(--green)"; setTimeout(function(){ el.style.borderColor = ""; }, 2000); }
+            }
+          }
+        });
+
+        fetched++;
+        if (fetched === expiries.length) {
+          var now = new Date();
+          var t = now.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+          note.textContent = "✓ " + updates + " strikes updated (midpoints, 15min delay) · " + t;
+          note.style.color = "var(--green)";
+          btn.disabled = false;
+          btn.textContent = "↻ Fetch Live Chain";
+          rn();
+        }
+      })
+      .catch(function(e) {
+        errors++;
+        fetched++;
+        if (fetched === expiries.length) {
+          if (updates > 0) {
+            note.textContent = "⚠ Partial fetch (" + updates + " strikes). Some expirations unavailable.";
+            note.style.color = "var(--orange)";
+            rn();
+          } else {
+            note.innerHTML = 'Fetch failed — <a href="https://finance.yahoo.com/quote/XENE/options/" target="_blank" style="color:var(--accent)">open Yahoo chain</a> to copy manually';
+            note.style.color = "var(--orange)";
+          }
+          btn.disabled = false;
+          btn.textContent = "↻ Fetch Live Chain";
+        }
+      });
+  });
+}
+
 var OPT = [
-  {x:"Mar 21", k:45, p:3.20, t:"Sl. OTM", d:7},
-  {x:"Mar 21", k:50, p:1.40, t:"OTM", d:7},
-  {x:"Mar 21", k:55, p:0.55, t:"Deep OTM", d:7},
-  {x:"Apr 17", k:45, p:4.50, t:"Sl. OTM", d:34},
-  {x:"Apr 17", k:50, p:2.60, t:"OTM", d:34},
-  {x:"Apr 17", k:55, p:1.30, t:"Deep OTM", d:34}
+  {x:"Mar 21", k:40,   p:3.50, d:7},
+  {x:"Mar 21", k:42.5, p:2.20, d:7},
+  {x:"Mar 21", k:45,   p:1.20, d:7},
+  {x:"Mar 21", k:50,   p:0.35, d:7},
+  {x:"Apr 17", k:40,   p:5.50, d:34},
+  {x:"Apr 17", k:42.5, p:4.00, d:34},
+  {x:"Apr 17", k:45,   p:2.80, d:34},
+  {x:"Apr 17", k:50,   p:1.40, d:34}
 ];
-var SCN = [
-  {n:"Blowout positive", d:"Both doses hit, strong secondaries", p:65, pb:0.20, c:"#0a8559"},
-  {n:"Strong positive",  d:"25mg hits, 15mg hits (weaker OK)",  p:58, pb:0.40, c:"#0d9e6b"},
-  {n:"Mixed positive",   d:"25mg hits, 15mg misses significance",p:50,pb:0.20, c:"#4d7c0f"},
-  {n:"Modest positive",  d:"Stat sig but underwhelms P2b",      p:46, pb:0.10, c:"#b45309"},
-  {n:"Neutral / Unclear",d:"Ambiguous or delayed",              p:42, pb:0.05, c:"#c2410c"},
-  {n:"Miss / Failure",   d:"25mg misses primary endpoint",      p:25, pb:0.05, c:"#dc2626"}
-];
+
+function strikeLabel(k) {
+  var diff = ((k - C) / C) * 100;
+  if (diff <= -5) return "ITM";
+  if (diff < 0)  return "Sl. ITM";
+  if (diff < 3)  return "ATM";
+  if (diff < 8)  return "Sl. OTM";
+  if (diff < 18) return "OTM";
+  return "Deep OTM";
+}
 var iv = 1000, ex = "Mar 21", md = "sell";
 
 function nc(x) { var a=.254829592,b=-.284496736,c=1.421413741,e=-1.453152027,f=1.061405429,p=.3275911,s=x<0?-1:1,z=Math.abs(x)/1.4142135,t=1/(1+p*z); return .5*(1+s*(1-(((((f*t+e)*t)+c)*t+b)*t+a)*t*Math.exp(-z*z))); }
@@ -206,7 +406,7 @@ function buildPremiumEditor() {
 function updPrem(el) {
   var parts = el.id.split("_");
   var expiry = parts[1] === "Mar21" ? "Mar 21" : "Apr 17";
-  var strike = parseInt(parts[2]);
+  var strike = parseFloat(parts[2]);
   var val = parseFloat(el.value);
   if (isNaN(val) || val <= 0) return;
   OPT.forEach(function(o) {
@@ -215,8 +415,139 @@ function updPrem(el) {
   rn();
 }
 
+// ── ACTUAL POSITIONS ──────────────────────────────────────────────
+// Fill in your real fills here. n=contracts, fill=price paid per share.
+// x must match an OPT expiry key ("Mar 21" or "Apr 17") for post-event BS pricing.
+var POSITIONS = [
+  {k:42.5, x:"Mar 21", n:3, fill:7.50},
+  {k:40,   x:"Apr 17", n:2, fill:10.07}
+];
+
+function updPos(i, field, val) {
+  var v = parseFloat(val);
+  if (isNaN(v) || v <= 0) return;
+  if (field === "n") POSITIONS[i].n = Math.round(v);
+  else POSITIONS[i].fill = v;
+  renderPositions();
+}
+
+function renderPositions() {
+  var totalCost = POSITIONS.reduce(function(s,p){ return s + p.n * p.fill * 100; }, 0);
+  document.getElementById("posSummary").textContent =
+    "$" + Math.round(totalCost).toLocaleString() + " deployed · " + POSITIONS.length + " positions";
+
+  // Build position cards
+  var cardsHTML = "";
+  POSITIONS.forEach(function(p, i) {
+    var cost = p.n * p.fill * 100;
+    // Current mark = look up from premium editor (user's best current estimate)
+    var markPrem = p.fill;
+    OPT.forEach(function(o){ if(o.x===p.x && o.k===p.k) markPrem = o.p; });
+    var markPnl = (markPrem - p.fill) * p.n * 100;
+    var markPct = ((markPrem / p.fill) - 1) * 100;
+    var markColor = markPnl >= 0 ? "var(--green)" : "var(--red)";
+    cardsHTML += '<div class="pos-card">' +
+      '<div class="pos-card-top">' +
+        '<div><span class="pos-strike">$' + p.k + 'C</span><span class="pos-lbl">' + p.x + ' · ' + strikeLabel(p.k) + '</span></div>' +
+        '<div class="pos-markbox">' +
+          '<div class="pos-markval" style="color:' + markColor + '">' + (markPnl >= 0 ? '+' : '') + fd(markPnl) + '</div>' +
+          '<div class="pos-marklbl">mark P&L (' + fp(markPct) + ')</div>' +
+        '</div>' +
+      '</div>' +
+      '<div class="pos-fields">' +
+        '<div class="pos-field"><span class="pos-fl">Contracts</span>' +
+          '<input class="pos-inp" type="number" min="1" step="1" value="' + p.n + '" onchange="updPos(' + i + ',\'n\',this.value)"></div>' +
+        '<div class="pos-field"><span class="pos-fl">Fill Price</span>' +
+          '<input class="pos-inp" type="number" min="0.01" step="0.05" value="' + p.fill.toFixed(2) + '" onchange="updPos(' + i + ',\'fill\',this.value)"></div>' +
+        '<div class="pos-field"><span class="pos-fl">Total Cost</span><div class="pos-fval">$' + Math.round(cost).toLocaleString() + '</div></div>' +
+        '<div class="pos-field"><span class="pos-fl">BE at Expiry</span><div class="pos-fval">$' + (p.k + p.fill).toFixed(2) + '</div></div>' +
+      '</div>' +
+    '</div>';
+  });
+  document.getElementById("posCards").innerHTML = cardsHTML;
+
+  // Per-position scenario results
+  var posResults = POSITIONS.map(function(p) {
+    var d = 7;
+    OPT.forEach(function(o){ if(o.x===p.x && o.k===p.k) d = o.d; });
+    var cost = p.n * p.fill * 100;
+    var sr = SCN.map(function(s) {
+      var ov = md === "expiry" ? Math.max(0, s.p - p.k) : bs(s.p, p.k, d/365, 0.045, 0.55);
+      var tv = p.n * ov * 100;
+      var pf = tv - cost;
+      var rp = cost > 0 ? (pf / cost) * 100 : -100;
+      return {pf:pf, rp:rp};
+    });
+    return {k:p.k, x:p.x, n:p.n, fill:p.fill, cost:cost, sr:sr};
+  });
+
+  var totalCostAll = posResults.reduce(function(s,r){ return s + r.cost; }, 0);
+
+  // Table header
+  var thHTML = '<tr><th style="text-align:left">Scenario</th><th>Prob</th>';
+  posResults.forEach(function(r){ thHTML += '<th>$' + r.k + 'C ' + r.x + '</th>'; });
+  thHTML += '<th style="background:rgba(37,99,235,0.07);color:var(--accent)">Portfolio</th></tr>';
+  document.getElementById("posTblHead").innerHTML = thHTML;
+
+  // Table body
+  var tbHTML = "";
+  SCN.forEach(function(s, si) {
+    var rowPnl = posResults.reduce(function(sum, r){ return sum + r.sr[si].pf; }, 0);
+    var rowPct = totalCostAll > 0 ? (rowPnl / totalCostAll) * 100 : -100;
+    var rowBg = si % 2 === 1 ? 'background:var(--surface2);' : '';
+    tbHTML += '<tr style="' + rowBg + '">' +
+      '<td><div style="font-weight:600;font-size:11px">' + s.n + '</div><div style="font-size:9px;color:var(--text3)">' + s.d + '</div></td>' +
+      '<td style="font-family:JetBrains Mono,monospace;font-weight:700;color:' + s.c + '">' + Math.round(s.pb*100) + '%</td>';
+    posResults.forEach(function(r) {
+      var res = r.sr[si];
+      tbHTML += '<td><div style="font-family:JetBrains Mono,monospace;font-size:13px;font-weight:700;color:' + cl(res.rp) + '">' + fp(res.rp) + '</div>' +
+        '<div style="font-family:JetBrains Mono,monospace;font-size:9px;color:' + (res.pf>=0?"var(--green)":"var(--red)") + '">' + fd(res.pf) + '</div></td>';
+    });
+    tbHTML += '<td style="background:rgba(37,99,235,0.05);">' +
+      '<div style="font-family:JetBrains Mono,monospace;font-size:13px;font-weight:700;color:' + cl(rowPct) + '">' + fp(rowPct) + '</div>' +
+      '<div style="font-family:JetBrains Mono,monospace;font-size:9px;color:' + (rowPnl>=0?"var(--green)":"var(--red)") + '">' + fd(rowPnl) + '</div></td></tr>';
+  });
+  document.getElementById("posTblBody").innerHTML = tbHTML;
+
+  // Expected value cards
+  var evHTML = "";
+  posResults.forEach(function(r) {
+    var wr=0, wd=0;
+    r.sr.forEach(function(s,i){ wr += SCN[i].pb * s.rp; wd += SCN[i].pb * s.pf; });
+    evHTML += '<div class="evc"><div class="en">$' + r.k + 'C ' + r.x + '</div>' +
+      '<div class="ep">' + r.n + ' cts · $' + Math.round(r.cost).toLocaleString() + ' cost</div>' +
+      '<div class="er" style="color:' + (wr>0?"var(--green)":"var(--red)") + '">' + fp(wr) + '</div>' +
+      '<div class="ed">E[P&L]: ' + fd(wd) + '</div></div>';
+  });
+  // Combined portfolio EV
+  var pwr=0, pwd=0;
+  SCN.forEach(function(s,si) {
+    var rowPnl = posResults.reduce(function(sum,r){ return sum + r.sr[si].pf; }, 0);
+    var rowPct = totalCostAll > 0 ? (rowPnl / totalCostAll) * 100 : -100;
+    pwr += s.pb * rowPct;
+    pwd += s.pb * rowPnl;
+  });
+  evHTML += '<div class="evc" style="border-color:rgba(37,99,235,0.3);background:rgba(37,99,235,0.05)">' +
+    '<div class="en" style="color:var(--accent)">Portfolio Total</div>' +
+    '<div class="ep">$' + Math.round(totalCostAll).toLocaleString() + ' deployed</div>' +
+    '<div class="er" style="color:' + (pwr>0?"var(--green)":"var(--red)") + '">' + fp(pwr) + '</div>' +
+    '<div class="ed">E[P&L]: ' + fd(pwd) + '</div></div>';
+  document.getElementById("posEV").innerHTML = evHTML;
+}
+
+
+function setIV(v) {
+  iv = v;
+  document.getElementById("ivDisplay").textContent = "$" + v.toLocaleString();
+  document.getElementById("ivSlider").value = v;
+  rn();
+}
+
 function rn() {
-  mk("ib", [1000,2500,5000,10000,25000], iv, function(v){iv=v;rn();}, "$");
+  // sync slider display in case rn() called directly
+  document.getElementById("ivDisplay").textContent = "$" + iv.toLocaleString();
+  document.getElementById("ivSlider").value = iv;
+  mk("ib", [1000,2500,5000,10000,25000], iv, function(v){setIV(v);});
   mk("eb", ["Mar 21","Apr 17"], ex, function(v){ex=v;rn();});
   mk("mb2", [{v:"sell",l:"Sell after data"},{v:"expiry",l:"Hold to expiry"}], md, function(v){md=v;rn();});
 
@@ -228,7 +559,7 @@ function rn() {
       var tv = n*ov*100, pf = tv-co, rp = co>0 ? (pf/co)*100 : -100;
       return {n:s.n, d:s.d, p:s.p, pb:s.pb, c:s.c, tv:tv, pf:pf, rp:rp};
     });
-    return {k:o.k, p:o.p, t:o.t, d:o.d, n:n, co:co, sr:sr};
+    return {k:o.k, p:o.p, t:strikeLabel(o.k), d:o.d, n:n, co:co, sr:sr};
   });
 
   // Cards
@@ -275,6 +606,8 @@ function rn() {
   document.getElementById("mnt").innerHTML = md==="sell" ?
     '<b>Sell after data (recommended):</b> Assumes selling 1-3 days post-readout. Mar 21: ~7 days time value remain. Apr 17: ~34 days. Post-event IV ~55%. Probabilities: 60% clear positive (blowout+strong), 20% mixed, 10% modest, 5% neutral, 5% miss. Mar 21 = more leverage via cheaper premium.' :
     '<b>Hold to expiry:</b> Pure intrinsic at expiration. Worst-case floor. You would typically sell before expiry on a catalyst trade.';
+
+  renderPositions();
 }
 
 buildPremiumEditor();
